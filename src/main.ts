@@ -1,0 +1,125 @@
+import * as THREE from "three";
+import { SparkRenderer, SplatMesh } from "@sparkjsdev/spark";
+import "./style.css";
+
+const app = document.querySelector<HTMLDivElement>("#app");
+
+if (!app) {
+  throw new Error("Missing #app element");
+}
+
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.01,
+  1000
+);
+
+camera.position.set(0, 0, 0);
+camera.lookAt(0, 0, -3);
+
+const canvas = document.querySelector<HTMLCanvasElement>("#viewer");
+
+const renderer = new THREE.WebGLRenderer({
+  canvas: canvas ?? undefined,
+  antialias: false,
+});
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+if (!canvas) {
+  app.appendChild(renderer.domElement);
+}
+
+const spark = new SparkRenderer({ renderer });
+scene.add(spark);
+
+const splatRoot = new THREE.Group();
+splatRoot.position.set(0, 0, -3);
+scene.add(splatRoot);
+
+let currentSplat: THREE.Object3D | null = null;
+
+function setStatus(message: string) {
+  const status = document.querySelector("#status");
+
+  if (status) {
+    status.textContent = message;
+  }
+}
+
+async function createSplat(url: string): Promise<THREE.Object3D> {
+  const splat = new SplatMesh({
+    url,
+  });
+
+  return splat as unknown as THREE.Object3D;
+}
+
+async function loadSplatFromUrl(url: string) {
+  setStatus(`Loading ${url}...`);
+
+  if (currentSplat) {
+    splatRoot.remove(currentSplat);
+    currentSplat = null;
+  }
+
+  const splat = await createSplat(url);
+
+  currentSplat = splat;
+  splatRoot.add(currentSplat);
+
+  setStatus(`Loaded ${url}`);
+}
+
+const fileInput = document.querySelector<HTMLInputElement>("#fileInput");
+
+fileInput?.addEventListener("change", async () => {
+  const file = fileInput.files?.[0];
+
+  if (!file) return;
+
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    await loadSplatFromUrl(objectUrl);
+    setStatus(`Loaded local file: ${file.name}`);
+  } catch (error) {
+    console.error(error);
+    setStatus(`Failed to load ${file.name}`);
+  }
+});
+
+const resetButton = document.querySelector<HTMLButtonElement>("#resetView");
+
+resetButton?.addEventListener("click", () => {
+  splatRoot.rotation.set(0, 0, 0);
+  splatRoot.position.set(0, 0, -3);
+
+  camera.position.set(0, 0, 0);
+  camera.lookAt(0, 0, -3);
+
+  setStatus("View reset");
+});
+
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+loadSplatFromUrl("https://sparkjs.dev/assets/splats/butterfly.spz").catch(
+  (error) => {
+    console.error(error);
+    setStatus("Failed to load sample splat");
+  }
+);
+
+renderer.setAnimationLoop(() => {
+  splatRoot.rotation.y += 0.01;
+  renderer.render(scene, camera);
+});

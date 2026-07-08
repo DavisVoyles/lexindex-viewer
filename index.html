@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lexindex Viewer</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="viewer"></canvas>
+
+      <div id="hud">
+        <div>
+          <h1>Lexindex Viewer</h1>
+          <p>Load and inspect Gaussian splats in the browser.</p>
+        </div>
+
+        <div id="controls">
+          <label class="button">
+            Load local splat
+            <input id="fileInput" type="file" accept=".splat,.ply,.ksplat,.spz" />
+          </label>
+
+          <button id="resetView">Reset view</button>
+        </div>
+
+        <div id="status">Loading sample splat…</div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

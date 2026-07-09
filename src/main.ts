@@ -38,10 +38,19 @@ const spark = new SparkRenderer({ renderer });
 scene.add(spark);
 
 const splatRoot = new THREE.Group();
-splatRoot.position.set(0, 0, -3);
 scene.add(splatRoot);
 
 let currentSplat: THREE.Object3D | null = null;
+
+const defaultSplatPosition = new THREE.Vector3(0, 0, -3);
+const defaultSplatRotation = new THREE.Euler(0, 0, Math.PI);
+
+function resetSplatView() {
+  splatRoot.position.copy(defaultSplatPosition);
+  splatRoot.rotation.copy(defaultSplatRotation);
+}
+
+resetSplatView();
 
 function setStatus(message: string) {
   const status = document.querySelector("#status");
@@ -96,8 +105,7 @@ fileInput?.addEventListener("change", async () => {
 const resetButton = document.querySelector<HTMLButtonElement>("#resetView");
 
 resetButton?.addEventListener("click", () => {
-  splatRoot.rotation.set(0, 0, 0);
-  splatRoot.position.set(0, 0, -3);
+  resetSplatView();
 
   camera.position.set(0, 0, 0);
   camera.lookAt(0, 0, -3);

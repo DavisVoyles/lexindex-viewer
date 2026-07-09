@@ -5,6 +5,7 @@ import "./style.css";
 type SplatPage = {
   description: string;
   path: string;
+  positionZ: number;
   title: string;
   url: string;
 };
@@ -13,12 +14,14 @@ const splatPages: Record<string, SplatPage> = {
   train: {
     description: "Train capture",
     path: "/train",
+    positionZ: -3,
     title: "Train",
     url: "/splats/train_1000.splat",
   },
   robotest: {
     description: "Robotest capture",
     path: "/robotest",
+    positionZ: -5,
     title: "Robotest",
     url: "/splats/robotest.splat",
   },
@@ -71,7 +74,7 @@ scene.add(splatRoot);
 let currentSplat: THREE.Object3D | null = null;
 const currentPage = getCurrentPage();
 
-const defaultSplatPosition = new THREE.Vector3(0, 0, -3);
+const defaultSplatPosition = new THREE.Vector3(0, 0, currentPage.positionZ);
 const defaultSplatRotation = new THREE.Euler(0, 0, Math.PI);
 
 function resetSplatView() {
@@ -152,7 +155,7 @@ resetButton?.addEventListener("click", () => {
   resetSplatView();
 
   camera.position.set(0, 0, 0);
-  camera.lookAt(0, 0, -3);
+  camera.lookAt(defaultSplatPosition);
 
   setStatus("View reset");
 });

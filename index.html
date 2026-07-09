@@ -12,10 +12,13 @@
       <div id="hud">
         <div>
           <h1>Lexindex Viewer</h1>
-          <p>Load and inspect Gaussian splats in the browser.</p>
+          <p><span id="splatTitle">Train</span> - <span id="splatDescription">Train capture</span></p>
         </div>
 
         <div id="controls">
+          <a class="button" href="/train">Train</a>
+          <a class="button" href="/robotest">Robotest</a>
+
           <label class="button">
             Load local splat
             <input id="fileInput" type="file" accept=".splat,.ply,.ksplat,.spz" />

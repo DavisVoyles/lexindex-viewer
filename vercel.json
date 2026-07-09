@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/train",
+      "destination": "/"
+    },
+    {
+      "source": "/robotest",
+      "destination": "/"
+    }
+  ]
+}

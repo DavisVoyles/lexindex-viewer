@@ -2,6 +2,34 @@ import * as THREE from "three";
 import { SparkRenderer, SplatMesh } from "@sparkjsdev/spark";
 import "./style.css";
 
+type SplatPage = {
+  description: string;
+  path: string;
+  title: string;
+  url: string;
+};
+
+const splatPages: Record<string, SplatPage> = {
+  train: {
+    description: "Train capture",
+    path: "/train",
+    title: "Train",
+    url: "/splats/train_1000.splat",
+  },
+  robotest: {
+    description: "Robotest capture",
+    path: "/robotest",
+    title: "Robotest",
+    url: "/splats/robotest.splat",
+  },
+};
+
+function getCurrentPage() {
+  const pageKey = window.location.pathname.replace(/^\/+/, "") || "train";
+
+  return splatPages[pageKey] ?? splatPages.train;
+}
+
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (!app) {
@@ -41,6 +69,7 @@ const splatRoot = new THREE.Group();
 scene.add(splatRoot);
 
 let currentSplat: THREE.Object3D | null = null;
+const currentPage = getCurrentPage();
 
 const defaultSplatPosition = new THREE.Vector3(0, 0, -3);
 const defaultSplatRotation = new THREE.Euler(0, 0, Math.PI);
@@ -57,6 +86,21 @@ function setStatus(message: string) {
 
   if (status) {
     status.textContent = message;
+  }
+}
+
+function setPageDetails(page: SplatPage) {
+  document.title = `Lexindex Viewer - ${page.title}`;
+
+  const title = document.querySelector("#splatTitle");
+  const description = document.querySelector("#splatDescription");
+
+  if (title) {
+    title.textContent = page.title;
+  }
+
+  if (description) {
+    description.textContent = page.description;
   }
 }
 
@@ -120,7 +164,9 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-loadSplatFromUrl("/splats/train_1000.splat").catch(
+setPageDetails(currentPage);
+
+loadSplatFromUrl(currentPage.url).catch(
   (error) => {
     console.error(error);
     setStatus("Failed to load default splat");

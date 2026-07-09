@@ -21,7 +21,7 @@ const splatPages: Record<string, SplatPage> = {
   robotest: {
     description: "Robotest capture",
     path: "/robotest",
-    positionZ: -5,
+    positionZ: -12,
     title: "Robotest",
     url: "/splats/robotest.splat",
   },

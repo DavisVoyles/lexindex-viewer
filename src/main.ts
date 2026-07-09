@@ -23,7 +23,7 @@ const splatPages: Record<string, SplatPage> = {
     path: "/robotest",
     positionZ: -12,
     title: "Robotest",
-    url: "/splats/robotest.splat",
+    url: "/splats/robotest_masked.ksplat",
   },
 };
 

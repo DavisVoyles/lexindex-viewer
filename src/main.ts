@@ -112,10 +112,10 @@ window.addEventListener("resize", () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-loadSplatFromUrl("https://sparkjs.dev/assets/splats/butterfly.spz").catch(
+loadSplatFromUrl("/splats/train_1000.splat").catch(
   (error) => {
     console.error(error);
-    setStatus("Failed to load sample splat");
+    setStatus("Failed to load default splat");
   }
 );
 
